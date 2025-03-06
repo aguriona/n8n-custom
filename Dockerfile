@@ -1,8 +1,12 @@
-# Usa la imagen oficial de n8n
+# Usa la imagen oficial de n8n (basada en Alpine)
 FROM n8nio/n8n:latest
 
-# Instala Python y el paquete youtube-transcript-api
+# Instala Python y youtube-transcript-api
 USER root
-RUN apt-get update && apt-get install -y python3-pip
-RUN pip3 install youtube-transcript-api
+
+# Instala dependencias usando apk (gestor de paquetes de Alpine)
+RUN apk update && \
+    apk add --no-cache python3 py3-pip && \
+    pip3 install youtube-transcript-api
+
 USER nodejs
