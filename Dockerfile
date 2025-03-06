@@ -1,12 +1,19 @@
-# Usa la imagen oficial de n8n (basada en Alpine)
 FROM n8nio/n8n:latest
 
-# Instala Python y youtube-transcript-api
 USER root
 
-# Instala dependencias usando apk (gestor de paquetes de Alpine)
+# 1. Instalar Python y crear entorno virtual
 RUN apk update && \
     apk add --no-cache python3 py3-pip && \
-    pip3 install youtube-transcript-api
+    python3 -m venv /home/nodejs/venv
+
+# 2. Instalar paquetes en el entorno virtual
+RUN /home/nodejs/venv/bin/pip install youtube-transcript-api
+
+# 3. Asegurar permisos para el usuario nodejs
+RUN chown -R nodejs:nodejs /home/nodejs/venv
 
 USER nodejs
+
+# 4. Añadir el entorno virtual al PATH
+ENV PATH="/home/nodejs/venv/bin:${PATH}"
